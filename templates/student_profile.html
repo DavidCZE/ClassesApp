@@ -30,28 +30,30 @@ Uses Bootstrap for responsive/mobile-friendly design.
                     </div>
                     <!-- Per-class grades -->
                     <h5 class="mt-4">Grades for Attended Classes</h5>
-                    <table class="table table-bordered table-responsive">
-                        <thead>
-                            <tr>
-                                <th>Class</th>
-                                <th>Date</th>
-                                <th>Teacher</th>
-                                <th>Grade</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for att in attended_classes %}
-                            <tr>
-                                <td>{{ att.class_ref.title }}</td>
-                                <td>{{ att.class_ref.datetime.strftime('%Y-%m-%d') }}</td>
-                                <td>{{ att.class_ref.user.username }}</td>
-                                <td>
-                                    <input type="text" class="form-control" name="class_grade_{{ att.class_ref.class_id }}" value="{{ att.class_grade or '' }}">
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Class</th>
+                                    <th>Date</th>
+                                    <th>Teacher</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for att in attended_classes %}
+                                <tr>
+                                    <td>{{ att.class_ref.title }}</td>
+                                    <td>{{ att.class_ref.datetime.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ att.class_ref.user.username }}</td>
+                                    <td>
+                                        <input type="text" class="form-control" name="class_grade_{{ att.class_ref.class_id }}" value="{{ att.class_grade or '' }}">
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     <button type="submit" class="btn btn-primary">Update Progress</button>
                     <a href="{{ url_for('analytics.analytics') }}" class="btn btn-secondary">Back</a>
                 </form>

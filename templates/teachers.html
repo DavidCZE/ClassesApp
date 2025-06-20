@@ -22,26 +22,28 @@
                 <h5 class="card-title">Class: {{ class_obj.title }}</h5>
                 <p class="card-text">Date: {{ class_obj.datetime.strftime('%Y-%m-%d') }} | Time: {{ class_obj.datetime.strftime('%H:%M') }}</p>
                 <form method="post" action="{{ url_for('teacher.mark_attendance', class_id=class_obj.class_id) }}">
-                    <table class="table table-bordered table-responsive">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Email</th>
-                                <th>Present</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for student in students %}
-                            <tr>
-                                <td>{{ student.name }}</td>
-                                <td>{{ student.email }}</td>
-                                <td class="text-center">
-                                    <input type="checkbox" name="present_{{ student.student_id }}" {% if attendance and attendance.get(student.student_id) %}checked{% endif %}>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Email</th>
+                                    <th>Present</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td>{{ student.name }}</td>
+                                    <td>{{ student.email }}</td>
+                                    <td class="text-center">
+                                        <input type="checkbox" name="present_{{ student.student_id }}" {% if attendance and attendance.get(student.student_id) %}checked{% endif %}>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     <button type="submit" class="btn btn-success">Save Attendance</button>
                 </form>
             </div>
@@ -51,35 +53,39 @@
         <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">Your Upcoming Classes</h5>
-                <ul class="list-group mb-3">
-                {% for c in classes_upcoming %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>{{ c.title }}</strong><br>
-                            <span class="text-muted">{{ c.datetime.strftime('%Y-%m-%d %H:%M') }}</span><br>
-                            <span>Teacher: {{ c.user.username }}</span>
-                        </div>
-                        <a href="{{ url_for('teacher.mark_attendance', class_id=c.class_id) }}" class="btn btn-sm btn-primary">Mark Attendance</a>
-                    </li>
-                {% else %}
-                    <li class="list-group-item">No upcoming classes assigned.</li>
-                {% endfor %}
-                </ul>
+                <div class="table-responsive">
+                    <ul class="list-group mb-3">
+                    {% for c in classes_upcoming %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ c.title }}</strong><br>
+                                <span class="text-muted">{{ c.datetime.strftime('%Y-%m-%d %H:%M') }}</span><br>
+                                <span>Teacher: {{ c.user.username }}</span>
+                            </div>
+                            <a href="{{ url_for('teacher.mark_attendance', class_id=c.class_id) }}" class="btn btn-sm btn-primary">Mark Attendance</a>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">No upcoming classes assigned.</li>
+                    {% endfor %}
+                    </ul>
+                </div>
                 <h5 class="card-title mt-4">Your Past Classes</h5>
-                <ul class="list-group">
-                {% for c in classes_past %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>{{ c.title }}</strong><br>
-                            <span class="text-muted">{{ c.datetime.strftime('%Y-%m-%d %H:%M') }}</span><br>
-                            <span>Teacher: {{ c.user.username }}</span>
-                        </div>
-                        <a href="{{ url_for('teacher.mark_attendance', class_id=c.class_id) }}" class="btn btn-sm btn-primary">Mark Attendance</a>
-                    </li>
-                {% else %}
-                    <li class="list-group-item">No past classes assigned.</li>
-                {% endfor %}
-                </ul>
+                <div class="table-responsive">
+                    <ul class="list-group">
+                    {% for c in classes_past %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ c.title }}</strong><br>
+                                <span class="text-muted">{{ c.datetime.strftime('%Y-%m-%d %H:%M') }}</span><br>
+                                <span>Teacher: {{ c.user.username }}</span>
+                            </div>
+                            <a href="{{ url_for('teacher.mark_attendance', class_id=c.class_id) }}" class="btn btn-sm btn-primary">Mark Attendance</a>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">No past classes assigned.</li>
+                    {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
         {% endif %}    </div>
