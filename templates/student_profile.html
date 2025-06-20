@@ -35,6 +35,7 @@ Uses Bootstrap for responsive/mobile-friendly design.
                             <tr>
                                 <th>Class</th>
                                 <th>Date</th>
+                                <th>Teacher</th>
                                 <th>Grade</th>
                             </tr>
                         </thead>
@@ -43,6 +44,7 @@ Uses Bootstrap for responsive/mobile-friendly design.
                             <tr>
                                 <td>{{ att.class_ref.title }}</td>
                                 <td>{{ att.class_ref.datetime.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ att.class_ref.user.username }}</td>
                                 <td>
                                     <input type="text" class="form-control" name="class_grade_{{ att.class_ref.class_id }}" value="{{ att.class_grade or '' }}">
                                 </td>
