@@ -5,21 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container py-4">
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+            <a href="{{ url_for('teacher.teacher_export_attendance_csv') }}" class="btn btn-info ms-2">Export CSV</a>
+            <a href="{{ url_for('analytics') }}" class="btn btn-success ms-2">Analytics</a>
+        </div>
         <h2 class="mb-4 text-center">Teacher Dashboard</h2>
         {% if class_obj %}
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title">Class: {{ class_obj.subject }}</h5>
+                <h5 class="card-title">Class: {{ class_obj.title }}</h5>
                 <p class="card-text">Date: {{ class_obj.datetime.strftime('%Y-%m-%d') }} | Time: {{ class_obj.datetime.strftime('%H:%M') }}</p>
-                <form method="post" action="{{ url_for('mark_attendance', class_id=class_obj.id) }}">
+                <form method="post" action="{{ url_for('teacher.mark_attendance', class_id=class_obj.class_id) }}">
                     <table class="table table-bordered table-responsive">
                         <thead>
                             <tr>
                                 <th>Student Name</th>
+                                <th>Email</th>
                                 <th>Present</th>
                             </tr>
                         </thead>
@@ -27,8 +34,9 @@
                             {% for student in students %}
                             <tr>
                                 <td>{{ student.name }}</td>
-                                <td>
-                                    <input type="checkbox" name="present_{{ student.id }}" {% if attendance and attendance.get(student.id) %}checked{% endif %}>
+                                <td>{{ student.email }}</td>
+                                <td class="text-center">
+                                    <input type="checkbox" name="present_{{ student.student_id }}" {% if attendance and attendance.get(student.student_id) %}checked{% endif %}>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -38,28 +46,52 @@
                 </form>
             </div>
         </div>
-        <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary">Back to Classes</a>
+        <a href="{{ url_for('teacher.teacher_dashboard') }}" class="btn btn-secondary">Back to Classes</a>
         {% else %}
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title">Your Classes</h5>
-                <ul class="list-group">
-                {% for c in classes %}
+                <h5 class="card-title">Your Upcoming Classes</h5>
+                <ul class="list-group mb-3">
+                {% for c in classes_upcoming %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ c.subject }} ({{ c.datetime.strftime('%Y-%m-%d %H:%M') }})
-                        <a href="{{ url_for('mark_attendance', class_id=c.id) }}" class="btn btn-sm btn-primary">Mark Attendance</a>
+                        <div>
+                            <strong>{{ c.title }}</strong><br>
+                            <span class="text-muted">{{ c.datetime.strftime('%Y-%m-%d %H:%M') }}</span><br>
+                            <span>Teacher: {{ c.user.username }}</span>
+                        </div>
+                        <a href="{{ url_for('teacher.mark_attendance', class_id=c.class_id) }}" class="btn btn-sm btn-primary">Mark Attendance</a>
                     </li>
                 {% else %}
-                    <li class="list-group-item">No classes assigned.</li>
+                    <li class="list-group-item">No upcoming classes assigned.</li>
+                {% endfor %}
+                </ul>
+                <h5 class="card-title mt-4">Your Past Classes</h5>
+                <ul class="list-group">
+                {% for c in classes_past %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ c.title }}</strong><br>
+                            <span class="text-muted">{{ c.datetime.strftime('%Y-%m-%d %H:%M') }}</span><br>
+                            <span>Teacher: {{ c.user.username }}</span>
+                        </div>
+                        <a href="{{ url_for('teacher.mark_attendance', class_id=c.class_id) }}" class="btn btn-sm btn-primary">Mark Attendance</a>
+                    </li>
+                {% else %}
+                    <li class="list-group-item">No past classes assigned.</li>
                 {% endfor %}
                 </ul>
             </div>
         </div>
-        {% endif %}
-    </div>
-    <footer class="group-footer text-center mt-4">
-      © Group 7 - <script>document.write(new Date().getFullYear());</script><br>
-      Made by: David Malínek (20241880), Guilherme Viegas (20241824), Ricardo Lima (20241736), Simão Rodrigues (20241751)
+        {% endif %}    </div>
+    <footer class="group-footer mt-4 container">
+        <div class="footer-content">
+            <div class="footer-copyright">© Group 7 - <script>document.write(new Date().getFullYear());</script></div>
+            <div class="footer-divider"></div>
+            <div class="footer-names">
+                Made by: David Malínek (20241880), Guilherme Viegas (20241824), 
+                Ricardo Lima (20241736), Simão Rodrigues (20241751)
+            </div>
+        </div>
     </footer>
 </body>
 </html>

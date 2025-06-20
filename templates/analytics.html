@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container py-4">
+        <div class="card shadow w-100">
+            <div class="card-body">
+                <h2 class="mb-4 text-center">Attendance Analytics</h2>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h4>Upcoming Classes</h4>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Date</th>
+                                        {% if class_stats and class_stats[0].get('teacher') %}<th>Teacher</th>{% endif %}
+                                        <th>Attended</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for c in class_stats if c.is_future %}
+                                    <tr>
+                                        <td>{{ c.title }}</td>
+                                        <td>{{ c.date }}</td>
+                                        {% if c.get('teacher') %}<td>{{ c.teacher }}</td>{% endif %}
+                                        <td>{{ c.attended }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <h4 class="mt-4">Past Classes</h4>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Date</th>
+                                        {% if class_stats and class_stats[0].get('teacher') %}<th>Teacher</th>{% endif %}
+                                        <th>Attended</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for c in class_stats if not c.is_future %}
+                                    <tr>
+                                        <td>{{ c.title }}</td>
+                                        <td>{{ c.date }}</td>
+                                        {% if c.get('teacher') %}<td>{{ c.teacher }}</td>{% endif %}
+                                        <td>{{ c.attended }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Student Attendance</h4>
+                        <div class="table-responsive" style="min-width: 320px;">
+                            <table class="table table-bordered align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Attended</th>
+                                        <th>Profile</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for s in student_stats %}
+                                    <tr>
+                                        <td class="text-truncate" style="max-width: 150px;">{{ s.name }}</td>
+                                        <td>{{ s.attended }}</td>
+                                        <td><a href="{{ url_for('student.student_profile', student_id=s.student_id) }}" class="btn btn-sm btn-outline-primary">Profile</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-4">Back</a>
+    </div>
+    <footer class="group-footer mt-4 container">
+        <div class="footer-content">
+            <div class="footer-copyright">© Group 7 - <script>document.write(new Date().getFullYear());</script></div>
+            <div class="footer-divider"></div>
+            <div class="footer-names">
+                Made by: David Malínek (20241880), Guilherme Viegas (20241824), Ricardo Lima (20241736), Simão Rodrigues (20241751)
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
