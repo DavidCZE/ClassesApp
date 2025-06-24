@@ -61,3 +61,5 @@ This web application allows administrators and teachers to manage classes, stude
 ## Notes
 - All data is stored in a local SQLite database (`classesApp.db`).
 - The app is mobile-friendly and works in modern browsers.
+- The database (`classesApp.db`) and all required tables are created automatically on first run. No manual setup is needed—just run the app and it will initialize everything for you.
+
