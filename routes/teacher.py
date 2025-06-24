@@ -22,10 +22,16 @@ def teacher_dashboard():
     """
     Teacher dashboard: view and manage your classes.
     Shows upcoming and past classes for the logged-in teacher.
+
+    Returns:
+        Response: Rendered template for teacher dashboard.
+    Raises:
+        403: If current user is admin (not a teacher).
     """
     if current_user.is_admin:
-        abort(403)
+        abort(403)  # Only teachers can access this dashboard
     now = datetime.datetime.now()
+    # Query upcoming and past classes for this teacher
     classes_upcoming = Class.select().where((Class.user == current_user.user_id) & (Class.datetime >= now)).order_by(Class.datetime.asc())
     classes_past = Class.select().where((Class.user == current_user.user_id) & (Class.datetime < now)).order_by(Class.datetime.desc())
     return render_template('teachers.html', classes_upcoming=classes_upcoming, classes_past=classes_past)
@@ -39,14 +45,24 @@ def mark_attendance(class_id):
     """
     Mark or view attendance for a class (teacher only).
     Allows marking students as present or absent for a specific class.
+
+    Args:
+        class_id (int): The class session ID.
+    Returns:
+        Response: Rendered template for attendance or redirect after POST.
+    Raises:
+        403: If current user is admin (not a teacher).
+        404: If class does not exist or does not belong to teacher.
     """
     if current_user.is_admin:
         abort(403)
+    # Ensure the class exists and belongs to the current teacher
     class_obj = Class.get_or_none(Class.class_id == class_id, Class.user == current_user.user_id)
     if not class_obj:
         abort(404)
     students = Student.select()
     if request.method == 'POST':
+        # Update attendance for each student
         for student in students:
             attend = f'present_{student.student_id}' in request.form
             att, created = Attendance.get_or_create(class_ref=class_obj, student=student)
@@ -54,6 +70,7 @@ def mark_attendance(class_id):
             att.save()
         flash('Attendance updated!')
         return redirect(url_for('teacher.teacher_dashboard'))
+    # Prepare attendance dictionary for template
     attendance = {att.student.student_id: att.attend for att in Attendance.select().where(Attendance.class_ref == class_id)}
     return render_template('teachers.html', class_obj=class_obj, students=students, attendance=attendance)
 
@@ -67,6 +84,11 @@ def teacher_export_attendance_csv():
     Export attendance records as CSV (teacher only).
     Columns: Class Title, Date, Attendance Count, Attended Students (comma-separated).
     Only includes classes for the logged-in teacher.
+
+    Returns:
+        Response: CSV file download of attendance report.
+    Raises:
+        403: If current user is admin (not a teacher).
     """
     if current_user.is_admin:
         abort(403)

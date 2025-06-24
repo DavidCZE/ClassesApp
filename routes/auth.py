@@ -19,6 +19,9 @@ def login():
     """
     Login page for all users (admin and teacher).
     Authenticates user and redirects to the appropriate dashboard.
+
+    Returns:
+        Response: Rendered login template or redirect after successful login.
     """
     error = None
     if request.method == 'POST':
@@ -31,6 +34,7 @@ def login():
             error = 'Incorrect password.'
         else:
             login_user(user)
+            # Redirect based on user role
             if user.is_admin:
                 return redirect(url_for('admin.admin_dashboard'))
             else:
@@ -45,6 +49,9 @@ def login():
 def logout():
     """
     Logout the current user and redirect to login page.
+
+    Returns:
+        Response: Redirect to login page after logout.
     """
     logout_user()
     return redirect(url_for('auth.login'))

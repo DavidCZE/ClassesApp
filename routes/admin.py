@@ -24,6 +24,11 @@ def admin_dashboard():
     Admin dashboard: manage classes, teachers, and students.
     Handles adding new classes, teachers, and students via POST.
     Shows lists of classes, teachers, and students.
+
+    Returns:
+        Response: Rendered admin dashboard template.
+    Raises:
+        403: If current user is not admin.
     """
     if not current_user.is_admin:
         abort(403)
@@ -69,6 +74,14 @@ def admin_dashboard():
 def admin_class_detail(class_id):
     """
     Show details and attendance for a class.
+
+    Args:
+        class_id (int): The class session ID.
+    Returns:
+        Response: Rendered template for class details.
+    Raises:
+        403: If current user is not admin.
+        404: If class does not exist.
     """
     if not current_user.is_admin:
         abort(403)
@@ -83,6 +96,13 @@ def admin_class_detail(class_id):
 def admin_delete_class(class_id):
     """
     Delete a class (admin only).
+
+    Args:
+        class_id (int): The class session ID.
+    Returns:
+        Response: Redirect to admin dashboard after deletion.
+    Raises:
+        403: If current user is not admin.
     """
     if not current_user.is_admin:
         abort(403)
@@ -97,6 +117,14 @@ def admin_delete_class(class_id):
 def admin_edit_class(class_id):
     """
     Edit a class (admin only).
+
+    Args:
+        class_id (int): The class session ID.
+    Returns:
+        Response: Rendered edit class template or redirect after POST.
+    Raises:
+        403: If current user is not admin.
+        404: If class does not exist.
     """
     if not current_user.is_admin:
         abort(403)
@@ -124,6 +152,13 @@ def admin_edit_class(class_id):
 def admin_delete_student(student_id):
     """
     Delete a student (admin only).
+
+    Args:
+        student_id (int): The student ID.
+    Returns:
+        Response: Redirect to admin dashboard after deletion.
+    Raises:
+        403: If current user is not admin.
     """
     if not current_user.is_admin:
         abort(403)
@@ -138,6 +173,14 @@ def admin_delete_student(student_id):
 def admin_edit_student(student_id):
     """
     Edit a student (admin only).
+
+    Args:
+        student_id (int): The student ID.
+    Returns:
+        Response: Rendered edit student template or redirect after POST.
+    Raises:
+        403: If current user is not admin.
+        404: If student does not exist.
     """
     if not current_user.is_admin:
         abort(403)
@@ -163,6 +206,13 @@ def admin_edit_student(student_id):
 def admin_delete_teacher(user_id):
     """
     Delete a teacher (admin only).
+
+    Args:
+        user_id (int): The teacher's user ID.
+    Returns:
+        Response: Redirect to admin dashboard after deletion.
+    Raises:
+        403: If current user is not admin.
     """
     if not current_user.is_admin:
         abort(403)
@@ -177,6 +227,14 @@ def admin_delete_teacher(user_id):
 def admin_edit_teacher(user_id):
     """
     Edit a teacher (admin only).
+
+    Args:
+        user_id (int): The teacher's user ID.
+    Returns:
+        Response: Rendered edit teacher template or redirect after POST.
+    Raises:
+        403: If current user is not admin.
+        404: If teacher does not exist.
     """
     if not current_user.is_admin:
         abort(403)
@@ -204,6 +262,11 @@ def export_attendance_csv():
     """
     Export all class attendance as CSV for all teachers.
     Columns: Class Title, Date, Teacher, Attendance Count, Attended Students (comma-separated).
+
+    Returns:
+        Response: CSV file as attachment.
+    Raises:
+        403: If current user is not admin.
     """
     if not current_user.is_admin:
         abort(403)

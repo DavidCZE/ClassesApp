@@ -12,6 +12,13 @@ student_bp = Blueprint('student', __name__)
 def student_profile(student_id):
     """
     Student profile page for viewing and updating overall and per-class grades.
+
+    Args:
+        student_id (int): The student's unique ID.
+    Returns:
+        Response: Rendered template for student profile or redirect after POST.
+    Raises:
+        404: If student does not exist.
     """
     student = Student.get_or_none(Student.student_id == student_id)
     if not student:

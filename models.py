@@ -1,49 +1,107 @@
-# Models for the GroupProject Flask app
-# Using Peewee ORM for SQLite database
+"""
+Models for the GroupProject Flask app.
+Defines database schema using Peewee ORM for SQLite.
+Includes User, Student, Class, and Attendance models.
+"""
 
 from peewee import *
 from flask_login import UserMixin
 import datetime
 
-# Database connection
-# This will create/use 'classesApp.db' SQLite database
+# =============================
+# Database Connection
+# =============================
+db = SqliteDatabase('classesApp.db')  # SQLite database for the app
 
-db = SqliteDatabase('classesApp.db')
-
-# Base model to set the database for all models
+# =============================
+# Base Model
+# =============================
 class BaseModel(Model):
+    """
+    Base model that sets the database for all derived models.
+    """
     class Meta:
         database = db
 
-# User model for teachers and admins
+# =============================
+# User Model
+# =============================
 class User(UserMixin, BaseModel):
-    user_id = AutoField(unique=True)  # Primary key
-    username = CharField(unique=True)  # Login username
-    password = CharField()  # Hashed password
-    is_admin = BooleanField(default=False)  # True for admin, False for teacher
+    """
+    User model for teachers and admins.
+
+    Attributes:
+        user_id (int): Primary key.
+        username (str): Login username (unique).
+        password (str): Hashed password.
+        is_admin (bool): True for admin, False for teacher.
+    """
+    user_id = AutoField(unique=True)
+    username = CharField(unique=True)
+    password = CharField()
+    is_admin = BooleanField(default=False)
 
     def get_id(self):
-        # Required by Flask-Login
+        """
+        Returns the user ID as a string (required by Flask-Login).
+
+        Returns:
+            str: User ID.
+        """
         return str(self.user_id)
 
-# Student model
+# =============================
+# Student Model
+# =============================
 class Student(BaseModel):
-    student_id = AutoField(unique=True)  # Primary key
-    name = CharField()  # Student's name
-    email = CharField(unique=True)  # Student's email
-    grade = CharField(null=True)  # Overall progress/grade
+    """
+    Student model.
 
-# Class model (represents a class session)
+    Attributes:
+        student_id (int): Primary key.
+        name (str): Student's name.
+        email (str): Student's email (unique).
+        grade (str): Overall progress/grade (nullable).
+    """
+    student_id = AutoField(unique=True)
+    name = CharField()
+    email = CharField(unique=True)
+    grade = CharField(null=True)
+
+# =============================
+# Class Model
+# =============================
 class Class(BaseModel):
-    class_id = AutoField(unique=True)  # Primary key
-    user = ForeignKeyField(User, backref='classes')  # Teacher for the class
-    title = CharField()  # Class title
-    datetime = DateTimeField()  # Date and time of the class
+    """
+    Class model representing a class session.
 
-# Attendance model (links students to classes and tracks attendance)
+    Attributes:
+        class_id (int): Primary key.
+        user (User): Teacher for the class.
+        title (str): Class title.
+        datetime (datetime): Date and time of the class.
+    """
+    class_id = AutoField(unique=True)
+    user = ForeignKeyField(User, backref='classes')
+    title = CharField()
+    datetime = DateTimeField()
+
+# =============================
+# Attendance Model
+# =============================
 class Attendance(BaseModel):
-    attendance_id = AutoField(unique=True)  # Primary key
-    class_ref = ForeignKeyField(Class, backref='attendances')  # The class
-    student = ForeignKeyField(Student, backref='attendances')  # The student
-    attend = BooleanField(default=False)  # True if attended
-    class_grade = CharField(null=True)  # Grade for this class
+    """
+    Attendance model linking students to classes and tracking attendance.
+
+    Attributes:
+        attendance_id (int): Primary key.
+        class_ref (Class): The class.
+        student (Student): The student.
+        attend (bool): True if attended.
+        class_grade (str): Grade for this class (nullable).
+    """
+    attendance_id = AutoField(unique=True)
+    class_ref = ForeignKeyField(Class, backref='attendances')
+    student = ForeignKeyField(Student, backref='attendances')
+    attend = BooleanField(default=False)
+    class_grade = CharField(null=True)

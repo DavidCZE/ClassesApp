@@ -16,9 +16,13 @@ def analytics():
     """
     Attendance analytics dashboard for admin and teachers.
     Shows class and student attendance statistics.
+
+    Returns:
+        Response: Rendered analytics template with statistics.
     """
     now = datetime.datetime.now()
     if current_user.is_admin:
+        # Admin: show stats for all classes and students
         class_stats = []
         for c in Class.select():
             total = Attendance.select().where(Attendance.class_ref == c).count()
@@ -43,6 +47,7 @@ def analytics():
             })
         return render_template('analytics.html', class_stats=class_stats, student_stats=student_stats)
     else:
+        # Teacher: show stats for their own classes and students
         class_stats = []
         for c in Class.select().where(Class.user == current_user.user_id):
             total = Attendance.select().where(Attendance.class_ref == c).count()
@@ -57,6 +62,7 @@ def analytics():
             })
         student_stats = []
         for s in Student.select():
+            # Only count attendance for this teacher's classes
             attended = Attendance.select().join(Class).where((Attendance.student == s) & (Attendance.attend == True) & (Class.user == current_user.user_id)).count()
             student_stats.append({
                 'name': s.name,
