@@ -1,7 +1,7 @@
-# GroupProject: Online Class & Attendance Management System
+# Group Project: Online Class & Attendance Management System
 
 ## Purpose
-This web application allows administrators and teachers to manage classes, students, attendance, and grades. It provides dashboards for both roles, analytics, and export features for record-keeping.
+This simple web application allows administrators and teachers to manage classes, students, attendance, and grades. It provides dashboards for both roles, analytics, and export features for record-keeping.
 
 ## Features
 - Admin and teacher login
